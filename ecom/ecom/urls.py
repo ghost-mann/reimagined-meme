@@ -18,14 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from products.views import product_list
+from products import views  # Direct import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', product_list, name='home'),
-    path('products/', include('products.urls')),  # Includes products app URLs
+    path('', views.product_list, name='home'),
+    path('products/', include(('products.urls', 'products'), namespace='products')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
