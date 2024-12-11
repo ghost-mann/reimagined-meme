@@ -1,14 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Product
 
 def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'products/products_list.html', {'products': products})
+    if request.method == 'GET':
+        #display a list of all products
+        products = Product.objects.all()
+        return render(request, 'products/products_list.html', {'products': products})
 
-def product_detail(request, pk):
-    product = Product.objects.get(pk=pk)
-    return render(request, 'products/product_detail.html', {'product': product})
+    elif request.method == 'POST':
+        name = request.POST['name']
+        price = request.POST['price']
+        description = request.POST['description']
+        image = request.FILES['image']
 
-from django.http import HttpResponse
-def home(request):
-    return HttpResponse("Hello, world. You're at the product page.")
+        new_product = Product(name=name, price=price, description=description, image=image)
+
+        new_product.save()
+
+        return redirect('product_list')
+
